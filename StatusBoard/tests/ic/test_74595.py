@@ -48,6 +48,18 @@ class TestIC(unittest.TestCase):
                 self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0], sim.register_values())
                 self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0], sim.latch_values())
 
+    def test_value_zero_without_srclr(self):
+        print('--------------------------------')
+        print('test_value_zero_without_srclr')
+        print('--------------------------------')
+        with IC74595(ser=1, srclk=2, rclk=4, oe=5, pin_factory=pin_factory) as ic:
+            ic.oe.on()
+            print(super(IC74595, ic).value)
+            with IC74595Simulator(ic) as sim:
+                ic.value = 0x00
+                self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0], sim.register_values())
+                self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0], sim.latch_values())
+
     def test_value_one_bit(self):
         print('--------------------------------')
         print('test_value_one_bit')

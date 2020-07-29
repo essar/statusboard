@@ -187,15 +187,17 @@ class IC74595Simulator:
             print("[%s] (%d) R clocked: values=%s" % (self.ic, ticks, self.latch_values()))
 
     def srclk_rise(self, ticks, state):
+        srclr_value = self.ic.srclr.value if hasattr(self.ic, 'srclr') else 1
+
         # Push data through register from LSB to MSB
-        self.sr[7].set = self.ic.ser.value & self.ic.srclr.value
-        self.sr[6].set = self.sr[7].output & self.ic.srclr.value
-        self.sr[5].set = self.sr[6].output & self.ic.srclr.value
-        self.sr[4].set = self.sr[5].output & self.ic.srclr.value
-        self.sr[3].set = self.sr[4].output & self.ic.srclr.value
-        self.sr[2].set = self.sr[3].output & self.ic.srclr.value
-        self.sr[1].set = self.sr[2].output & self.ic.srclr.value
-        self.sr[0].set = self.sr[1].output & self.ic.srclr.value
+        self.sr[7].set = self.ic.ser.value & srclr_value
+        self.sr[6].set = self.sr[7].output & srclr_value
+        self.sr[5].set = self.sr[6].output & srclr_value
+        self.sr[4].set = self.sr[5].output & srclr_value
+        self.sr[3].set = self.sr[4].output & srclr_value
+        self.sr[2].set = self.sr[3].output & srclr_value
+        self.sr[1].set = self.sr[2].output & srclr_value
+        self.sr[0].set = self.sr[1].output & srclr_value
 
         # Clock all registers
         self._clock_registers()
