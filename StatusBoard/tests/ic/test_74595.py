@@ -41,6 +41,7 @@ class TestIC(unittest.TestCase):
         print('--------------------------------')
         with IC74595(ser=1, srclk=2, srclr=3, rclk=4, oe=5, pin_factory=pin_factory) as ic:
             ic.oe.on()
+            ic.srclr.on()
             print(super(IC74595, ic).value)
             with IC74595Simulator(ic) as sim:
                 ic.value = 0x00
@@ -53,6 +54,7 @@ class TestIC(unittest.TestCase):
         print('--------------------------------')
         with IC74595(ser=1, srclk=2, srclr=3, rclk=4, oe=5, pin_factory=pin_factory) as ic:
             ic.oe.on()
+            ic.srclr.on()
             print(super(IC74595, ic).value)
             with IC74595Simulator(ic) as sim:
                 ic.value = 0x01
@@ -65,6 +67,7 @@ class TestIC(unittest.TestCase):
         print('--------------------------------')
         with IC74595(ser=1, srclk=2, srclr=3, rclk=4, oe=5, pin_factory=pin_factory) as ic:
             ic.oe.on()
+            ic.srclr.on()
             print(super(IC74595, ic).value)
             with IC74595Simulator(ic) as sim:
                 ic.value = 0x81
@@ -77,6 +80,7 @@ class TestIC(unittest.TestCase):
         print('--------------------------------')
         with IC74595(ser=1, srclk=2, srclr=3, rclk=4, oe=5, pin_factory=pin_factory) as ic:
             ic.oe.on()
+            ic.srclr.on()
             print(super(IC74595, ic).value)
             with IC74595Simulator(ic) as sim:
                 ic.value = 0xFF
@@ -89,6 +93,7 @@ class TestIC(unittest.TestCase):
         print('--------------------------------')
         with IC74595(ser=1, srclk=2, srclr=3, rclk=4, oe=5, pin_factory=pin_factory) as ic:
             ic.oe.on()
+            ic.srclr.on()
             print(super(IC74595, ic).value)
             with IC74595Simulator(ic) as sim:
                 ic.disable_output()
@@ -101,8 +106,39 @@ class TestIC(unittest.TestCase):
         print('--------------------------------')
         with IC74595(ser=1, srclk=2, srclr=3, rclk=4, oe=5, pin_factory=pin_factory) as ic:
             ic.oe.off()
+            ic.srclr.on()
             print(super(IC74595, ic).value)
             with IC74595Simulator(ic) as sim:
                 ic.enable_output()
                 ic.value = 0xFF
+                self.assertEqual([1, 1, 1, 1, 1, 1, 1, 1], sim.latch_values())
+
+    def test_clear_and_clock(self):
+        print('--------------------------------')
+        print('test_clear_and_clock')
+        print('--------------------------------')
+        with IC74595(ser=1, srclk=2, srclr=3, rclk=4, oe=5, pin_factory=pin_factory) as ic:
+            ic.oe.off()
+            ic.srclr.on()
+            print(super(IC74595, ic).value)
+            with IC74595Simulator(ic) as sim:
+                ic.value = 0xFF
+                self.assertEqual([1, 1, 1, 1, 1, 1, 1, 1], sim.register_values())
+                ic.srclr.off()
+                ic.pulse_srclk()
+                self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0], sim.register_values())
+
+    def test_clear(self):
+        print('--------------------------------')
+        print('test_clear')
+        print('--------------------------------')
+        with IC74595(ser=1, srclk=2, srclr=3, rclk=4, oe=5, pin_factory=pin_factory) as ic:
+            ic.oe.on()
+            ic.srclr.on()
+            print(super(IC74595, ic).value)
+            with IC74595Simulator(ic) as sim:
+                ic.value = 0xFF
+                self.assertEqual([1, 1, 1, 1, 1, 1, 1, 1], sim.register_values())
+                ic.clear()
+                self.assertEqual([0, 0, 0, 0, 0, 0, 0, 0], sim.register_values())
                 self.assertEqual([1, 1, 1, 1, 1, 1, 1, 1], sim.latch_values())

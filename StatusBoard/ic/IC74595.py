@@ -67,8 +67,9 @@ class IC74595(CompositeOutputDevice):
 
     def clear(self):
         if hasattr(self, 'srclr'):
-            self.srclr.on()
             self.srclr.off()
+            self.pulse_srclk()
+            self.srclr.on()
 
     def disable_output(self):
         if hasattr(self, 'oe'):
@@ -150,12 +151,19 @@ class IC74595Simulator:
     def __exit__(self, *args):
         print("%s finished" % self.__class__.__name__)
 
+    def _clock_latches(self):
+        [x.clock() for x in self.r]
+
+    def _clock_registers(self):
+        [x.clock() for x in self.sr]
+
     def rclk_rise(self, ticks, state):
+        # Set each latch value to output of register
         for i in range(0, 8):
             self.r[i].set = self.sr[i].output
 
-        # Clock each item in the list
-            [x.clock() for x in self.r]
+        # Clock all latches
+        self._clock_latches()
 
         # Set outputs
         if hasattr(self.ic, 'q1'):
@@ -180,17 +188,17 @@ class IC74595Simulator:
 
     def srclk_rise(self, ticks, state):
         # Push data through register from LSB to MSB
-        self.sr[7].set = self.ic.ser.value
-        self.sr[6].set = self.sr[7].output
-        self.sr[5].set = self.sr[6].output
-        self.sr[4].set = self.sr[5].output
-        self.sr[3].set = self.sr[4].output
-        self.sr[2].set = self.sr[3].output
-        self.sr[1].set = self.sr[2].output
-        self.sr[0].set = self.sr[1].output
+        self.sr[7].set = self.ic.ser.value & self.ic.srclr.value
+        self.sr[6].set = self.sr[7].output & self.ic.srclr.value
+        self.sr[5].set = self.sr[6].output & self.ic.srclr.value
+        self.sr[4].set = self.sr[5].output & self.ic.srclr.value
+        self.sr[3].set = self.sr[4].output & self.ic.srclr.value
+        self.sr[2].set = self.sr[3].output & self.ic.srclr.value
+        self.sr[1].set = self.sr[2].output & self.ic.srclr.value
+        self.sr[0].set = self.sr[1].output & self.ic.srclr.value
 
-        # Clock each item in the list
-        [x.clock() for x in self.sr]
+        # Clock all registers
+        self._clock_registers()
 
         if self.print_register:
             print("[%s] (%d) SR clocked: values=%s" % (self.ic, ticks, self.register_values()))
