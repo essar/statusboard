@@ -61,6 +61,10 @@ def set_leds(leds, merge=False):
         ic.value = sum([(1 if leds[k] > 0 else 0) * led_map[k] for k in led_map.keys()])
 
 
+def reset():
+    ic.value = 0
+
+
 def startup():
     """ Dance all the LEDs in a sequence for testing. """
     speed = 4
@@ -119,7 +123,7 @@ def test(speed=10):
     start_value = ic.value
 
     # Reset
-    ic.value = 0
+    reset()
 
     # Create result dict
     result = {k: True for k in led_map.keys()}

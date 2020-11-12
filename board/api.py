@@ -19,6 +19,13 @@ def test():
     return {'result': sb.test()}
 
 
+# Reset board
+@app.route('/leds/reset', methods=['POST'])
+def test():
+    sb.reset()
+    return get_leds()
+
+
 # Get LED states
 @app.route('/leds', methods=['GET'])
 def get_leds():
