@@ -16,8 +16,7 @@ def status():
 # Run board self-test
 @app.route('/test', methods=['POST'])
 def test():
-    sb.test()
-    return {'status': 'OK'}
+    return {'result': sb.test()}
 
 
 # Get LED states
