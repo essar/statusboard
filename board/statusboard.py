@@ -17,6 +17,17 @@ LED6_MASK = 0x20
 LED7_MASK = 0x40
 LED8_MASK = 0x80
 
+led_map = {
+    1: LED1_MASK,
+    2: LED2_MASK,
+    3: LED3_MASK,
+    4: LED4_MASK,
+    5: LED5_MASK,
+    6: LED6_MASK,
+    7: LED7_MASK,
+    8: LED8_MASK
+}
+
 # Handle command line arguments
 argparser = ArgumentParser()
 argparser.add_argument('--test', action='store_const', const=True, default=False, help='Run in testing mode')
@@ -39,28 +50,11 @@ def enable_leds(pin_mask):
 
 
 def get_leds():
-    return {
-        1: ic.value & LED1_MASK > 0,
-        2: ic.value & LED2_MASK > 0,
-        3: ic.value & LED3_MASK > 0,
-        4: ic.value & LED4_MASK > 0,
-        5: ic.value & LED5_MASK > 0,
-        6: ic.value & LED6_MASK > 0,
-        7: ic.value & LED7_MASK > 0,
-        8: ic.value & LED8_MASK > 0
-    }
+    return {k: ic.value & led_map[k] > 0 for k in led_map.keys()}
 
 
 def set_leds(leds):
-    value = (leds[1] * LED1_MASK) + \
-            (leds[2] * LED2_MASK) + \
-            (leds[3] * LED3_MASK) + \
-            (leds[4] * LED4_MASK) + \
-            (leds[5] * LED5_MASK) + \
-            (leds[6] * LED6_MASK) + \
-            (leds[7] * LED7_MASK) + \
-            (leds[8] * LED8_MASK)
-    ic.value = value
+    ic.value = sum([leds[k] * led_map[k] for k in led_map.keys()])
 
 
 def startup():
