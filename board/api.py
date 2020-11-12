@@ -41,7 +41,7 @@ def set_all_leds():
 def set_leds():
     try:
         leds = flask.request.get_json()['leds']
-        sb.set_leds({int(k): leds[k] for k in leds.keys()})
+        sb.set_leds({int(k): leds[k] for k in leds.keys()}, merge=True)
         return get_leds()
     except KeyError:
         return bad_request()

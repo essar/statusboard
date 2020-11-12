@@ -53,8 +53,12 @@ def get_leds():
     return {k: 1 if ic.value & led_map[k] > 0 else 0 for k in led_map.keys()}
 
 
-def set_leds(leds):
-    ic.value = sum([(1 if leds[k] > 0 else 0) * led_map[k] for k in led_map.keys()])
+def set_leds(leds, merge=False):
+    if merge:
+        current = get_leds()
+        ic.value = sum([(1 if (leds[k] if k in leds else current[k]) > 0 else 0) * led_map[k] for k in led_map.keys()])
+    else:
+        ic.value = sum([(1 if leds[k] > 0 else 0) * led_map[k] for k in led_map.keys()])
 
 
 def startup():
