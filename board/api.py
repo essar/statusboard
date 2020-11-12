@@ -25,6 +25,17 @@ def get_leds():
     return {'leds': sb.get_leds()}
 
 
+# Set LED states
+@app.route('/leds', methods=['PUT'])
+def set_leds():
+    try:
+        leds = flask.request.get_json()['leds']
+        sb.set_leds({int(k): leds[k] for k in leds.keys()})
+        return {'status': 'OK'}
+    except KeyError:
+        return bad_request()
+
+
 @app.route('/leds/<pin>', methods=['GET'])
 def get_led(pin):
     try:
@@ -42,6 +53,11 @@ def get_led(pin):
 
 
 # Error handlers
+@app.errorhandler(400)
+def bad_request():
+    return {'status': 400, 'message': 'Bad request'}, 400
+
+
 @app.errorhandler(404)
 def not_found():
     return {'status': 404, 'message': 'Not found'}, 404

@@ -22,9 +22,9 @@ argparser = ArgumentParser()
 argparser.add_argument('--test', action='store_const', const=True, default=False, help='Run in testing mode')
 cmdargs = vars(argparser.parse_args())
 
+# Configure board
 if cmdargs['test']:
     pin_factory = MockFactory()
-    # Configure board
     ic = IC74595(ser=SER_OUTPUT_PIN, srclk=SRCLK_OUTPUT_PIN, rclk=RCLK_OUTPUT_PIN, pin_factory=pin_factory)
 else:
     ic = IC74595(ser=SER_OUTPUT_PIN, srclk=SRCLK_OUTPUT_PIN, rclk=RCLK_OUTPUT_PIN)
@@ -49,6 +49,18 @@ def get_leds():
         7: ic.value & LED7_MASK > 0,
         8: ic.value & LED8_MASK > 0
     }
+
+
+def set_leds(leds):
+    value = (leds[1] * LED1_MASK) + \
+            (leds[2] * LED2_MASK) + \
+            (leds[3] * LED3_MASK) + \
+            (leds[4] * LED4_MASK) + \
+            (leds[5] * LED5_MASK) + \
+            (leds[6] * LED6_MASK) + \
+            (leds[7] * LED7_MASK) + \
+            (leds[8] * LED8_MASK)
+    ic.value = value
 
 
 def startup():
