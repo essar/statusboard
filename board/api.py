@@ -10,7 +10,7 @@ app.config["DEBUG"] = True
 # Static status endpoint for testing the server is up
 @app.route('/status', methods=['GET'])
 def status():
-    return {'status': 'API running'}
+    return {'status': 'API running', 'args': sb.cmdargs}
 
 
 # Run board self-test

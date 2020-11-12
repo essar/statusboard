@@ -1,3 +1,4 @@
+from argparse import ArgumentParser
 from ic.IC74595 import IC74595
 from time import sleep
 
@@ -16,13 +17,17 @@ LED6_MASK = 0x20
 LED7_MASK = 0x40
 LED8_MASK = 0x80
 
-pin_factory = MockFactory()
+# Handle command line arguments
+argparser = ArgumentParser()
+argparser.add_argument('--test', action='store_const', const=True, default=False, help='Run in testing mode')
+cmdargs = vars(argparser.parse_args())
 
-# Configure board
-ic = IC74595(ser=SER_OUTPUT_PIN, srclk=SRCLK_OUTPUT_PIN, rclk=RCLK_OUTPUT_PIN, pin_factory=pin_factory)
-
-
-# ic = IC74595(ser=SER_OUTPUT_PIN, srclk=SRCLK_OUTPUT_PIN, rclk=RCLK_OUTPUT_PIN)
+if cmdargs['test']:
+    pin_factory = MockFactory()
+    # Configure board
+    ic = IC74595(ser=SER_OUTPUT_PIN, srclk=SRCLK_OUTPUT_PIN, rclk=RCLK_OUTPUT_PIN, pin_factory=pin_factory)
+else:
+    ic = IC74595(ser=SER_OUTPUT_PIN, srclk=SRCLK_OUTPUT_PIN, rclk=RCLK_OUTPUT_PIN)
 
 
 def disable_leds(pin_mask):
@@ -205,5 +210,6 @@ def test(speed=10):
     return result
 
 
-# Run startup routine
-startup()
+if not cmdargs['test']:
+    # Run startup routine
+    startup()
