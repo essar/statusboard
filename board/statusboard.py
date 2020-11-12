@@ -33,8 +33,6 @@ def enable_leds(pin_mask):
 
 def get_leds():
 
-    enable_leds(LED2_MASK + LED3_MASK)
-
     return {
         1: ic.value & LED1_MASK > 0,
         2: ic.value & LED2_MASK > 0,
