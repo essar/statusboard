@@ -110,110 +110,32 @@ def startup():
 
 def test(speed=10):
     sleep_secs = (1 / speed)
-    result = {}
 
-    # Start empty
+    # Store starting value
+    start_value = ic.value
+
+    # Reset
     ic.value = 0
 
-    result[1] = True
-    result[2] = True
-    result[3] = True
-    result[4] = True
-    result[5] = True
-    result[6] = True
-    result[7] = True
-    result[8] = True
+    # Create result dict
+    result = {k: True for k in led_map.keys()}
 
-    enable_leds(LED1_MASK)
-    result[1] &= ic.value & LED1_MASK > 0
-    result[1] &= ic.value == LED1_MASK
-    sleep(sleep_secs)
+    for i in led_map.keys():
+        enable_leds(led_map[i])
+        result[i] &= ic.value & led_map[i] > 0
+        result[i] &= ic.value == sum([led_map[k] for k in led_map.keys() if k <= i])
+        sleep(sleep_secs)
 
-    enable_leds(LED2_MASK)
-    result[2] &= ic.value & LED2_MASK > 0
-    result[2] &= ic.value == LED1_MASK + LED2_MASK
-    sleep(sleep_secs)
+    for i in led_map.keys():
+        disable_leds(led_map[i])
+        result[i] &= ic.value & led_map[i] == 0
+        result[i] &= ic.value == sum([led_map[k] for k in led_map.keys() if k > i])
+        sleep(sleep_secs)
 
-    enable_leds(LED3_MASK)
-    result[3] &= ic.value & LED3_MASK > 0
-    result[3] &= ic.value == LED1_MASK + LED2_MASK + LED3_MASK
-    sleep(sleep_secs)
+    # Reset to original value
+    ic.value = start_value
 
-    enable_leds(LED4_MASK)
-    result[4] &= ic.value & LED4_MASK > 0
-    result[4] &= ic.value == LED1_MASK + LED2_MASK + LED3_MASK + LED4_MASK
-    sleep(sleep_secs)
-
-    enable_leds(LED5_MASK)
-    result[5] &= ic.value & LED5_MASK > 0
-    result[5] &= ic.value == LED1_MASK + LED2_MASK + LED3_MASK + LED4_MASK + \
-        LED5_MASK
-    sleep(sleep_secs)
-
-    enable_leds(LED6_MASK)
-    result[6] &= ic.value & LED6_MASK > 0
-    result[6] &= ic.value == LED1_MASK + LED2_MASK + LED3_MASK + LED4_MASK + \
-        LED5_MASK + LED6_MASK
-    sleep(sleep_secs)
-
-    enable_leds(LED7_MASK)
-    result[7] &= ic.value & LED7_MASK > 0
-    result[7] &= ic.value == LED1_MASK + LED2_MASK + LED3_MASK + LED4_MASK + \
-        LED5_MASK + LED6_MASK + LED7_MASK
-    sleep(sleep_secs)
-
-    enable_leds(LED8_MASK)
-    result[8] &= ic.value & LED8_MASK > 0
-    result[8] &= ic.value == LED1_MASK + LED2_MASK + LED3_MASK + LED4_MASK + \
-        LED5_MASK + LED6_MASK + LED7_MASK + LED8_MASK
-    sleep(sleep_secs)
-
-    disable_leds(LED1_MASK)
-    result[1] &= ic.value & LED1_MASK == 0
-    result[1] &= ic.value == LED2_MASK + LED3_MASK + LED4_MASK + LED5_MASK + \
-        LED6_MASK + LED7_MASK + LED8_MASK
-    sleep(sleep_secs)
-
-    disable_leds(LED2_MASK)
-    result[2] &= ic.value & LED2_MASK == 0
-    result[2] &= ic.value == LED3_MASK + LED4_MASK + LED5_MASK + LED6_MASK + \
-        LED7_MASK + LED8_MASK
-    sleep(sleep_secs)
-
-    disable_leds(LED3_MASK)
-    result[3] &= ic.value & LED3_MASK == 0
-    result[3] &= ic.value == LED4_MASK + LED5_MASK + LED6_MASK + LED7_MASK + \
-        LED8_MASK
-    sleep(sleep_secs)
-
-    disable_leds(LED4_MASK)
-    result[4] &= ic.value & LED4_MASK == 0
-    result[4] &= ic.value == LED5_MASK + LED6_MASK + LED7_MASK + LED8_MASK
-    sleep(sleep_secs)
-
-    disable_leds(LED5_MASK)
-    result[5] &= ic.value & LED5_MASK == 0
-    result[5] &= ic.value == LED6_MASK + LED7_MASK + LED8_MASK
-    sleep(sleep_secs)
-
-    disable_leds(LED6_MASK)
-    result[6] &= ic.value & LED6_MASK == 0
-    result[6] &= ic.value == LED7_MASK + LED8_MASK
-    sleep(sleep_secs)
-
-    disable_leds(LED7_MASK)
-    result[7] &= ic.value & LED7_MASK == 0
-    result[7] &= ic.value == LED8_MASK
-    sleep(sleep_secs)
-
-    disable_leds(LED8_MASK)
-    result[8] &= ic.value & LED8_MASK == 0
-    result[8] &= ic.value == 0
-    sleep(sleep_secs)
-
-    ic.value = 0
-
-    return result
+    return {k: ('OK' if result[k] else 'FAIL') for k in result.keys()}
 
 
 if not cmdargs['test']:
