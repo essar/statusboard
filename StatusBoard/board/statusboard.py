@@ -31,9 +31,9 @@ def enable_leds(pin_mask):
     ic.value = (ic.value | pin_mask)
 
 
-def testcard_dance():
+def test():
     """ Dance all the LEDs in a sequence for testing. """
-    speed = 2
+    speed = 4
     sleep_secs = (1 / speed)
 
     # May not need this as will be wired low anyway, but here for completeness
