@@ -27,6 +27,17 @@ def get_leds():
 
 # Set LED states
 @app.route('/leds', methods=['PUT'])
+def set_all_leds():
+    try:
+        leds = flask.request.get_json()['leds']
+        sb.set_leds({int(k): leds[k] for k in leds.keys()})
+        return get_leds()
+    except KeyError:
+        return bad_request()
+
+
+# Set LED states
+@app.route('/leds', methods=['PATCH'])
 def set_leds():
     try:
         leds = flask.request.get_json()['leds']
@@ -54,10 +65,13 @@ def get_led(pin):
 def set_led(pin):
     try:
         state = flask.request.get_json()['state']
-        if state:
+        if state >= 1:
             sb.enable_leds(sb.led_map[int(pin)])
-        else:
+        elif state == 0:
             sb.disable_leds(sb.led_map[int(pin)])
+        else:
+            return bad_request()
+
         return get_led(pin)
     except KeyError:
         return bad_request()

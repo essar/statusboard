@@ -50,11 +50,11 @@ def enable_leds(pin_mask):
 
 
 def get_leds():
-    return {k: ic.value & led_map[k] > 0 for k in led_map.keys()}
+    return {k: 1 if ic.value & led_map[k] > 0 else 0 for k in led_map.keys()}
 
 
 def set_leds(leds):
-    ic.value = sum([leds[k] * led_map[k] for k in led_map.keys()])
+    ic.value = sum([(1 if leds[k] > 0 else 0) * led_map[k] for k in led_map.keys()])
 
 
 def startup():
