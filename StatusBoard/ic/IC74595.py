@@ -8,7 +8,7 @@ class IC74595(CompositeOutputDevice):
 
     def __init__(self, **kwargs):
 
-        pin_factory = kwargs.pop('pin_factory')
+        pin_factory = kwargs.pop('pin_factory', None)
         if pin_factory is None:
             if CompositeOutputDevice.pin_factory is None:
                 CompositeOutputDevice.pin_factory = CompositeOutputDevice._default_pin_factory()
