@@ -44,20 +44,32 @@ def test():
         ic.value = (2 ** x)
         sleep(sleep_secs)
 
+    ic.value = 0
+    sleep(sleep_secs)
+
     # Right to left
     for x in range(0, 8):
         ic.value = (2 ** (7 - x))
         sleep(sleep_secs)
+
+    ic.value = 0
+    sleep(sleep_secs)
 
     # Outside in
     for x in range(0, 4):
         ic.value = (2 ** x) + (2 ** (7 - x))
         sleep(sleep_secs)
 
+    ic.value = 0
+    sleep(sleep_secs)
+
     # Inside out
     for x in range(0, 4):
         ic.value = (2 ** (3 - x)) + (2 ** (4 + x))
         sleep(sleep_secs)
+
+    ic.value = 0
+    sleep(sleep_secs)
 
     # Double flash
     for x in range(0, 2):
