@@ -80,3 +80,7 @@ def test():
 
     # Finish blank
     ic.value = 0
+
+
+if __name__ == '__main__':
+    test()
