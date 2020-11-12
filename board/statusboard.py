@@ -19,8 +19,8 @@ LED8_MASK = 0x80
 pin_factory = MockFactory()
 
 # Configure board
-# ic = IC74595(ser=SER_OUTPUT_PIN, srclk=SRCLK_OUTPUT_PIN, rclk=RCLK_OUTPUT_PIN, pin_factory=pin_factory)
-ic = IC74595(ser=SER_OUTPUT_PIN, srclk=SRCLK_OUTPUT_PIN, rclk=RCLK_OUTPUT_PIN)
+ic = IC74595(ser=SER_OUTPUT_PIN, srclk=SRCLK_OUTPUT_PIN, rclk=RCLK_OUTPUT_PIN, pin_factory=pin_factory)
+# ic = IC74595(ser=SER_OUTPUT_PIN, srclk=SRCLK_OUTPUT_PIN, rclk=RCLK_OUTPUT_PIN)
 
 
 def disable_leds(pin_mask):
@@ -29,6 +29,22 @@ def disable_leds(pin_mask):
 
 def enable_leds(pin_mask):
     ic.value = (ic.value | pin_mask)
+
+
+def get_leds():
+
+    enable_leds(LED2_MASK + LED3_MASK)
+
+    return {
+        1: ic.value & LED1_MASK > 0,
+        2: ic.value & LED2_MASK > 0,
+        3: ic.value & LED3_MASK > 0,
+        4: ic.value & LED4_MASK > 0,
+        5: ic.value & LED5_MASK > 0,
+        6: ic.value & LED6_MASK > 0,
+        7: ic.value & LED7_MASK > 0,
+        8: ic.value & LED8_MASK > 0
+    }
 
 
 def test():
