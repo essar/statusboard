@@ -15,7 +15,7 @@ def status():
 
 # Run board self-test
 @app.route('/test', methods=['POST'])
-def status():
+def test():
     sb.test()
     return {'status': 'OK'}
 
