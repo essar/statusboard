@@ -13,6 +13,13 @@ def status():
     return {'status': 'API running'}
 
 
+# Run board self-test
+@app.route('/test', methods=['POST'])
+def status():
+    sb.test()
+    return {'status': 'OK'}
+
+
 # Get LED states
 @app.route('/leds', methods=['GET'])
 def get_leds():
