@@ -21,7 +21,7 @@ def test():
 
 # Reset board
 @app.route('/leds/reset', methods=['POST'])
-def test():
+def reset():
     sb.reset()
     return get_leds()
 
