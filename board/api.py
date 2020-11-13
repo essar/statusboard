@@ -103,4 +103,11 @@ def internal_error(error):
 
 
 # Start the server
-app.run()
+try:
+    app.run()
+except IOError as e:
+    print(e)
+
+# Tidy up on exit
+sb.reset()
+print('Bye bye')
