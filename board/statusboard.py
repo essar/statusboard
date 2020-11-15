@@ -1,4 +1,4 @@
-from argparse import ArgumentParser
+from board.config import config
 from ic.IC74595 import IC74595
 from time import sleep
 
@@ -28,13 +28,8 @@ led_map = {
     8: LED8_MASK
 }
 
-# Handle command line arguments
-argparser = ArgumentParser()
-argparser.add_argument('--test', action='store_const', const=True, default=False, help='Run in testing mode')
-cmdargs = vars(argparser.parse_args())
-
 # Configure board
-if cmdargs['test']:
+if config.test_mode:
     pin_factory = MockFactory()
     ic = IC74595(ser=SER_OUTPUT_PIN, srclk=SRCLK_OUTPUT_PIN, rclk=RCLK_OUTPUT_PIN, pin_factory=pin_factory)
 else:
@@ -146,6 +141,6 @@ def test(speed=10):
     return {k: ('OK' if result[k] else 'FAIL') for k in result.keys()}
 
 
-if not cmdargs['test']:
+if not config.test_mode:
     # Run startup routine
     startup()
