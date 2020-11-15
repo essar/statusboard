@@ -1,3 +1,4 @@
+from board.config import config
 import board.statusboard as sb
 import flask
 
@@ -110,7 +111,7 @@ def internal_error(error):
 
 # Start the server
 try:
-    app.run()
+    app.run(debug=config.test_mode, host=config.http_host, port=config.http_port)
 except IOError as e:
     app.logger.error(e)
 
