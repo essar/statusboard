@@ -1,23 +1,32 @@
 from argparse import ArgumentParser
 
 
-class BoardConfig:
+class BoardConfig(dict):
     def __init__(self):
+        super().__init__()
+
         # Set up defaults
-        self.http_host = '127.0.0.1'
-        self.http_port = 5000
-        self.test_mode = False
+        self.__setitem__('host', '127.0.0.1')
+        self.__setitem__('port', 5000)
+        self.__setitem__('test', False)
+
+    @property
+    def http_host(self):
+        return self['host']
+
+    @property
+    def http_port(self):
+        return self['port']
+
+    @property
+    def test_mode(self):
+        return self['test']
 
 
 def __load_args(namespace):
 
     cmdargs = vars(namespace)
-    if 'host' in cmdargs:
-        config.http_host = cmdargs['host']
-    if 'port' in cmdargs:
-        config.http_port = cmdargs['port']
-    if 'test' in cmdargs:
-        config.test_mode = cmdargs['test']
+    config.update(cmdargs)
 
 
 config = BoardConfig()

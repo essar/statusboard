@@ -3,14 +3,14 @@ import board.statusboard as sb
 import flask
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
+
 
 # Define routes
 
 # Static status endpoint for testing the server is up
 @app.route('/status', methods=['GET'])
 def status():
-    return {'status': 'API running', 'args': sb.cmdargs}
+    return {'status': 'API running', 'config': config}
 
 
 # Run board self-test
